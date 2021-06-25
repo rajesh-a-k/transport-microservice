@@ -14,8 +14,11 @@ import com.tm.transport.model.Route;
 import com.tm.transport.model.Vehicle;
 import com.tm.transport.repository.TransportRepository;
 import com.tm.transport.repository.impl.TransportRepositoryImpl;
+import com.tm.transport.request.PaymentRequest;
 import com.tm.transport.request.RouteRequest;
 import com.tm.transport.request.VehicleRequest;
+import com.tm.transport.response.DayCollectionResponse;
+import com.tm.transport.response.PaymentResponse;
 import com.tm.transport.response.RouteResponse;
 import com.tm.transport.response.SuccessResponse;
 import com.tm.transport.response.VehicleResponse;
@@ -23,7 +26,9 @@ import com.tm.transport.response.VehicleResponse;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -108,6 +113,67 @@ public class TransportResource {
     @Consumes(MediaType.APPLICATION_JSON)
 	public Response addNewRoute(RouteRequest routeRequest) throws TransportException {
 		SuccessResponse successResponse = transportRepo.addRoute(routeRequest);
+		return Response.status(200).entity(successResponse).build();
+	}
+	
+	 /**
+     * Method handling HTTP GET requests. The returned object will be sent
+     * to the client as "JSON" media type.
+     *
+     * @return List<VehicleResponse> that will be returned as a JSON response.
+     */
+	@GET
+    @Path("vehicles/{routeId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<VehicleResponse> getVehiclesByRouteId(@PathParam("routeId") Long routeId)  {
+    	List<VehicleResponse> vehicles = new ArrayList<>();
+    	vehicles = transportRepo.findVehiclesByRouteId(routeId);
+        return vehicles;
+    }
+	
+	 /**
+     * Method handling HTTP PUT requests. The returned object will be sent
+     * to the client as "JSON" media type.
+     *
+     * @return PaymentResponse that will be returned as a JSON response.
+     */
+	@PUT
+    @Path("payment")
+    @Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public PaymentResponse makeTicketPayment(PaymentRequest paymentRequest) throws ParseException{
+		PaymentResponse paymentResponse = new PaymentResponse();
+		paymentResponse = transportRepo.doTicketPayment(paymentRequest);
+		return paymentResponse;
+	}
+	
+	/**
+     * Method handling HTTP GET requests. The returned object will be sent
+     * to the client as "JSON" media type.
+     *
+     * @return DayCollectionResponse that will be returned as a JSON response.
+     */
+	@GET
+    @Path("totalcollection")
+    @Produces(MediaType.APPLICATION_JSON)
+	public DayCollectionResponse getTotalDayCollection() throws ParseException{
+		DayCollectionResponse dayCollectionResponse = new DayCollectionResponse();
+		dayCollectionResponse = transportRepo.findTotalDayCollection();
+		return dayCollectionResponse;
+	}
+	
+	 /**
+     * Method handling HTTP PUT requests. The returned object will be sent
+     * to the client as "JSON" media type.
+     *
+     * @return PaymentResponse that will be returned as a JSON response.
+     */
+	@PUT
+    @Path("updatevehicle")
+    @Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response updateVehicle(VehicleRequest vehicleRequest) throws ParseException{
+		SuccessResponse successResponse = transportRepo.editVehicleDtails(vehicleRequest);
 		return Response.status(200).entity(successResponse).build();
 	}
 }

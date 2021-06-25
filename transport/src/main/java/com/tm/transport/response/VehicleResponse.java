@@ -11,8 +11,9 @@ public class VehicleResponse {
 	private Date lastServiceDate;
 	private Date nextServiceDate;
 	private Long totalKmRun;
-	private Long seatsFilled;
+	private int seatsFilled;
 	private Long routeId;
+	private int seatsAvailable;
 	/**
 	 * @return the vehicleId
 	 */
@@ -97,18 +98,7 @@ public class VehicleResponse {
 	public void setTotalKmRun(Long totalKmRun) {
 		this.totalKmRun = totalKmRun;
 	}
-	/**
-	 * @return the seatsFilled
-	 */
-	public Long getSeatsFilled() {
-		return seatsFilled;
-	}
-	/**
-	 * @param seatsFilled the seatsFilled to set
-	 */
-	public void setSeatsFilled(Long seatsFilled) {
-		this.seatsFilled = seatsFilled;
-	}
+	
 	/**
 	 * @return the routeId
 	 */
@@ -121,6 +111,31 @@ public class VehicleResponse {
 	public void setRouteId(Long routeId) {
 		this.routeId = routeId;
 	}
+	/**
+	 * @return the seatsFilled
+	 */
+	public int getSeatsFilled() {
+		return seatsFilled;
+	}
+	/**
+	 * @param seatsFilled the seatsFilled to set
+	 */
+	public void setSeatsFilled(int seatsFilled) {
+		this.seatsFilled = seatsFilled;
+	}
+	/**
+	 * @return the seatsAvailable
+	 */
+	public int getSeatsAvailable() {
+		return seatsAvailable;
+	}
+	/**
+	 * @param seatsAvailable the seatsAvailable to set
+	 */
+	public void setSeatsAvailable(int seatsAvailable) {
+		this.seatsAvailable = seatsAvailable;
+	}
+	
 	
 	
 }

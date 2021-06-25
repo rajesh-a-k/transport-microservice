@@ -59,7 +59,7 @@ public class Vehicle implements Serializable{
 	private Long totalKmRun;
 	
 	@Column(name = "SEATS_FILLED")
-	private Long seatsFilled;
+	private int seatsFilled;
 	
 	@Column(name = "ROUTE_ID")
 	private Long routeId;
@@ -68,8 +68,8 @@ public class Vehicle implements Serializable{
 	@JoinColumn(name = "ROUTE_ID", insertable = false , updatable = false)
 	private Route route;
 	
-	//@OneToMany(mappedBy = "vehicle",fetch = FetchType.EAGER)
-	//private List<Payments> payments;
+	@OneToMany(mappedBy = "vehicle",fetch = FetchType.EAGER)
+	private List<Payments> payments;
 
 	/**
 	 * @return the vehicleId
@@ -169,17 +169,19 @@ public class Vehicle implements Serializable{
 		this.totalKmRun = totalKmRun;
 	}
 
+	
+
 	/**
 	 * @return the seatsFilled
 	 */
-	public Long getSeatsFilled() {
+	public int getSeatsFilled() {
 		return seatsFilled;
 	}
 
 	/**
 	 * @param seatsFilled the seatsFilled to set
 	 */
-	public void setSeatsFilled(Long seatsFilled) {
+	public void setSeatsFilled(int seatsFilled) {
 		this.seatsFilled = seatsFilled;
 	}
 
