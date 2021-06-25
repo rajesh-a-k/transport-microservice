@@ -7,9 +7,9 @@ public class VehicleRequest {
 	private int vehicleId;
 	private int totalCapacity;
 	private String registrationNo;
-	private Date registrationDate;
-	private Date lastServiceDate;
-	private Date nextServiceDate;
+	private String registrationDate;
+	private String lastServiceDate;
+	private String nextServiceDate;
 	private Long totalKmRun;
 	private Long seatsFilled;
 	private Long routeId;
@@ -49,40 +49,41 @@ public class VehicleRequest {
 	public void setRegistrationNo(String registrationNo) {
 		this.registrationNo = registrationNo;
 	}
+	
 	/**
 	 * @return the registrationDate
 	 */
-	public Date getRegistrationDate() {
+	public String getRegistrationDate() {
 		return registrationDate;
 	}
 	/**
 	 * @param registrationDate the registrationDate to set
 	 */
-	public void setRegistrationDate(Date registrationDate) {
+	public void setRegistrationDate(String registrationDate) {
 		this.registrationDate = registrationDate;
 	}
 	/**
 	 * @return the lastServiceDate
 	 */
-	public Date getLastServiceDate() {
+	public String getLastServiceDate() {
 		return lastServiceDate;
 	}
 	/**
 	 * @param lastServiceDate the lastServiceDate to set
 	 */
-	public void setLastServiceDate(Date lastServiceDate) {
+	public void setLastServiceDate(String lastServiceDate) {
 		this.lastServiceDate = lastServiceDate;
 	}
 	/**
 	 * @return the nextServiceDate
 	 */
-	public Date getNextServiceDate() {
+	public String getNextServiceDate() {
 		return nextServiceDate;
 	}
 	/**
 	 * @param nextServiceDate the nextServiceDate to set
 	 */
-	public void setNextServiceDate(Date nextServiceDate) {
+	public void setNextServiceDate(String nextServiceDate) {
 		this.nextServiceDate = nextServiceDate;
 	}
 	/**

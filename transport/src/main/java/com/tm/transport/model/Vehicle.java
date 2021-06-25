@@ -1,23 +1,37 @@
 package com.tm.transport.model;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 @Entity(name = "vehicle")
 @Table(name = "vehicle", schema = "transport")
-public class Vehicle {
+public class Vehicle implements Serializable{
 	
+	
+	private static final long serialVersionUID = 7428709483822346973L;
+
 	@Id
 	@Column(name = "VEHICLE_ID")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -47,11 +61,15 @@ public class Vehicle {
 	@Column(name = "SEATS_FILLED")
 	private Long seatsFilled;
 	
+	@Column(name = "ROUTE_ID")
+	private Long routeId;
+	
 	@ManyToOne
+	@JoinColumn(name = "ROUTE_ID", insertable = false , updatable = false)
 	private Route route;
 	
-	@OneToMany(mappedBy = "vehicle")
-	private List<Payments> payments;
+	//@OneToMany(mappedBy = "vehicle",fetch = FetchType.EAGER)
+	//private List<Payments> payments;
 
 	/**
 	 * @return the vehicleId
@@ -177,6 +195,20 @@ public class Vehicle {
 	 */
 	public void setRoute(Route route) {
 		this.route = route;
+	}
+
+	/**
+	 * @return the routeId
+	 */
+	public Long getRouteId() {
+		return routeId;
+	}
+
+	/**
+	 * @param routeId the routeId to set
+	 */
+	public void setRouteId(Long routeId) {
+		this.routeId = routeId;
 	}
 	
 	

@@ -1,19 +1,35 @@
 package com.tm.transport.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 @Entity(name = "route")
 @Table(name = "route")
-public class Route {
+public class Route implements Serializable{
+
 	
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7273984726060688602L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="ROUTE_ID")
@@ -28,7 +44,7 @@ public class Route {
 	@Column(name="NUMBER_OF_VEHICLES")
 	private Long numberOfVehicles;
 	
-	@OneToMany(mappedBy = "route")
+	@OneToMany(mappedBy = "route",fetch = FetchType.EAGER )
 	private List<Vehicle> vehicles;
 
 	/**

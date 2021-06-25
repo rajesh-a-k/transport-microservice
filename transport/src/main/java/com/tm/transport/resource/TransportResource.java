@@ -1,5 +1,6 @@
 package com.tm.transport.resource;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import com.tm.transport.repository.TransportRepository;
 import com.tm.transport.repository.impl.TransportRepositoryImpl;
 import com.tm.transport.request.RouteRequest;
 import com.tm.transport.request.VehicleRequest;
+import com.tm.transport.response.RouteResponse;
 import com.tm.transport.response.SuccessResponse;
 import com.tm.transport.response.VehicleResponse;
 
@@ -70,8 +72,8 @@ public class TransportResource {
 	@GET
     @Path("routes")
     @Produces(MediaType.APPLICATION_JSON)
-	public List<Route> getAllRoutes() {
-		List<Route> routes = new ArrayList<>();
+	public List<RouteResponse> getAllRoutes() {
+		List<RouteResponse> routes = new ArrayList<>();
 		routes = transportRepo.findAllRoutes();
 		return routes;
 	}
@@ -82,12 +84,13 @@ public class TransportResource {
      *
      * @return Response that will be returned as a JSON response.
 	 * @throws TransportException 
+	 * @throws ParseException 
      */
 	@POST
     @Path("addvehicle")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-	public Response addNewVehicle(VehicleRequest vehicleRequest) throws TransportException {
+	public Response addNewVehicle(VehicleRequest vehicleRequest) throws TransportException, ParseException {
 		SuccessResponse successResponse = transportRepo.addVehicle(vehicleRequest);
 		return Response.status(200).entity(successResponse).build();
 	}

@@ -1,6 +1,9 @@
 package com.tm.transport.repository.impl;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -15,6 +18,7 @@ import com.tm.transport.model.Vehicle;
 import com.tm.transport.repository.TransportRepository;
 import com.tm.transport.request.RouteRequest;
 import com.tm.transport.request.VehicleRequest;
+import com.tm.transport.response.RouteResponse;
 import com.tm.transport.response.SuccessResponse;
 import com.tm.transport.response.VehicleResponse;
 
@@ -37,7 +41,7 @@ public class TransportRepositoryImpl implements TransportRepository{
     		vehicleResponse.setNextServiceDate(vehicle.getNextServiceDate());
     		vehicleResponse.setRegistrationDate(vehicle.getRegistrationDate());
     		vehicleResponse.setRegistrationNo(vehicle.getRegistrationNo());
-    		vehicleResponse.setRouteId(new Long(vehicle.getRoute().getRouteId()));
+    		vehicleResponse.setRouteId(vehicle.getRouteId());
     		vehicleResponse.setSeatsFilled(vehicle.getSeatsFilled());
     		vehicleResponse.setTotalCapacity(vehicle.getTotalCapacity());
     		vehicleResponse.setTotalKmRun(vehicle.getTotalKmRun());
@@ -60,25 +64,42 @@ public class TransportRepositoryImpl implements TransportRepository{
 	}
 
 	@Override
-	public List<Route> findAllRoutes() {
+	public List<RouteResponse> findAllRoutes() {
+		List<RouteResponse> routeResponses = new ArrayList<>();
 		beginTransaction();
 		String jpql = "select r from route r";
     	Query query = entityManager.createQuery(jpql);
     	List<Route> routes = query.getResultList();
     	endTransaction();
-		return routes;
+    	routes.stream().forEach((Route route)->{
+    		RouteResponse routeResponse = new RouteResponse();
+    		routeResponse.setDestinationPoint(route.getDestinationPoint());
+    		routeResponse.setNumberOfVehicles(route.getNumberOfVehicles());
+    		routeResponse.setRouteId(route.getRouteId());
+    		routeResponse.setStartPoint(route.getStartPoint());
+    		routeResponses.add(routeResponse);
+    	});
+		return routeResponses;
 	}
 
 	@Override
-	public SuccessResponse addVehicle(VehicleRequest vehicleRequest) throws TransportException {
+	public SuccessResponse addVehicle(VehicleRequest vehicleRequest) throws TransportException, ParseException {
 			Vehicle vehicle = new Vehicle();
-			vehicle.setLastServiceDate(vehicleRequest.getLastServiceDate());
-			vehicle.setNextServiceDate(vehicleRequest.getNextServiceDate());
-			vehicle.setRegistrationDate(vehicleRequest.getRegistrationDate());
+			if(vehicleRequest.getLastServiceDate()!=null) {
+				Date lastServiceDate = new SimpleDateFormat("yyyy-MM-dd").parse(vehicleRequest.getLastServiceDate());
+				vehicle.setLastServiceDate(lastServiceDate);
+			}
+			if(vehicleRequest.getNextServiceDate()!=null) {
+				Date nextServiceDate = new SimpleDateFormat("yyyy-MM-dd").parse(vehicleRequest.getNextServiceDate());
+				vehicle.setNextServiceDate(nextServiceDate);
+			}
+			if(vehicleRequest.getRegistrationDate()!=null) {
+				Date registrationDate = new SimpleDateFormat("yyyy-MM-dd").parse(vehicleRequest.getRegistrationDate());
+				vehicle.setRegistrationDate(registrationDate);
+			}
 			vehicle.setRegistrationNo(vehicleRequest.getRegistrationNo());
 			if(vehicleRequest.getRouteId()!=null) {
-				Route route = entityManager.find(Route.class, vehicleRequest.getRouteId());
-				vehicle.setRoute(route);
+				vehicle.setRouteId(vehicleRequest.getRouteId());
 			}
 			vehicle.setTotalCapacity(vehicleRequest.getTotalCapacity());
 			vehicle.setTotalKmRun(vehicleRequest.getTotalKmRun());
