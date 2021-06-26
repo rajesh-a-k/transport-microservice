@@ -35,8 +35,8 @@ import com.tm.transport.response.VehicleResponse;
 
 public class TransportRepositoryImpl implements TransportRepository{
 	
-	static EntityManagerFactory factory;
-	static EntityManager entityManager;
+	EntityManagerFactory factory;
+	EntityManager entityManager;
 	
 	@Override
 	public List<VehicleResponse> findAllVehicles() throws TransportException {
