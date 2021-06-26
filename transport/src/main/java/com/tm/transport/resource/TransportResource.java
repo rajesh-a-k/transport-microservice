@@ -62,7 +62,7 @@ public class TransportResource {
 	@GET
     @Path("vehicles")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<VehicleResponse> getAllVehicles()  {
+    public List<VehicleResponse> getAllVehicles() throws TransportException {
     	List<VehicleResponse> vehicles = new ArrayList<>();
     	vehicles = transportRepo.findAllVehicles();
         return vehicles;
@@ -77,7 +77,7 @@ public class TransportResource {
 	@GET
     @Path("routes")
     @Produces(MediaType.APPLICATION_JSON)
-	public List<RouteResponse> getAllRoutes() {
+	public List<RouteResponse> getAllRoutes() throws TransportException{
 		List<RouteResponse> routes = new ArrayList<>();
 		routes = transportRepo.findAllRoutes();
 		return routes;
@@ -125,7 +125,7 @@ public class TransportResource {
 	@GET
     @Path("vehicles/{routeId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<VehicleResponse> getVehiclesByRouteId(@PathParam("routeId") Long routeId)  {
+    public List<VehicleResponse> getVehiclesByRouteId(@PathParam("routeId") Long routeId) throws TransportException {
     	List<VehicleResponse> vehicles = new ArrayList<>();
     	vehicles = transportRepo.findVehiclesByRouteId(routeId);
         return vehicles;
@@ -172,7 +172,7 @@ public class TransportResource {
     @Path("updatevehicle")
     @Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response updateVehicle(VehicleRequest vehicleRequest) throws ParseException{
+	public Response updateVehicle(VehicleRequest vehicleRequest) throws ParseException, TransportException{
 		SuccessResponse successResponse = transportRepo.editVehicleDtails(vehicleRequest);
 		return Response.status(200).entity(successResponse).build();
 	}

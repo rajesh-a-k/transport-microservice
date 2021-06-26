@@ -15,8 +15,11 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 
+import org.hibernate.exception.ConstraintViolationException;
+
 import com.tm.transport.constants.TransportConstants;
 import com.tm.transport.exception.TransportException;
+import com.tm.transport.exception.mapper.TransportExceptionMapper;
 import com.tm.transport.model.Payments;
 import com.tm.transport.model.Route;
 import com.tm.transport.model.Vehicle;
@@ -36,13 +39,15 @@ public class TransportRepositoryImpl implements TransportRepository{
 	static EntityManager entityManager;
 	
 	@Override
-	public List<VehicleResponse> findAllVehicles() {
+	public List<VehicleResponse> findAllVehicles() throws TransportException {
 		List<VehicleResponse> vehicleResponses = new ArrayList<>(); 
 		beginTransaction();
 		String jpql = "select v from vehicle v";
     	Query query = entityManager.createQuery(jpql);
     	List<Vehicle> vehicles = query.getResultList();
     	endTransaction();
+    	if(vehicles.isEmpty())
+    		throw new TransportException(TransportConstants.VEHICLE_NOT_FOUND);
     	vehicles.stream().forEach((Vehicle vehicle)->{
     		VehicleResponse vehicleResponse = new VehicleResponse();
     		vehicleResponse.setLastServiceDate(vehicle.getLastServiceDate());
@@ -54,6 +59,7 @@ public class TransportRepositoryImpl implements TransportRepository{
     		vehicleResponse.setTotalCapacity(vehicle.getTotalCapacity());
     		vehicleResponse.setTotalKmRun(vehicle.getTotalKmRun());
     		vehicleResponse.setVehicleId(vehicle.getVehicleId());
+    		vehicleResponse.setSeatsAvailable(vehicle.getTotalCapacity()-vehicle.getSeatsFilled());
     		vehicleResponses.add(vehicleResponse);
     	});
 		return vehicleResponses;
@@ -72,13 +78,15 @@ public class TransportRepositoryImpl implements TransportRepository{
 	}
 
 	@Override
-	public List<RouteResponse> findAllRoutes() {
+	public List<RouteResponse> findAllRoutes() throws TransportException {
 		List<RouteResponse> routeResponses = new ArrayList<>();
 		beginTransaction();
 		String jpql = "select r from route r";
     	Query query = entityManager.createQuery(jpql);
     	List<Route> routes = query.getResultList();
     	endTransaction();
+    	if(routes.isEmpty())
+    		throw new TransportException(TransportConstants.ROUTE_NOT_FOUND);
     	routes.stream().forEach((Route route)->{
     		RouteResponse routeResponse = new RouteResponse();
     		routeResponse.setDestinationPoint(route.getDestinationPoint());
@@ -92,46 +100,72 @@ public class TransportRepositoryImpl implements TransportRepository{
 
 	@Override
 	public SuccessResponse addVehicle(VehicleRequest vehicleRequest) throws TransportException, ParseException {
-			Vehicle vehicle = new Vehicle();
-			if(vehicleRequest.getLastServiceDate()!=null) {
-				Date lastServiceDate = new SimpleDateFormat("yyyy-MM-dd").parse(vehicleRequest.getLastServiceDate());
-				vehicle.setLastServiceDate(lastServiceDate);
-			}
-			if(vehicleRequest.getNextServiceDate()!=null) {
-				Date nextServiceDate = new SimpleDateFormat("yyyy-MM-dd").parse(vehicleRequest.getNextServiceDate());
-				vehicle.setNextServiceDate(nextServiceDate);
-			}
-			if(vehicleRequest.getRegistrationDate()!=null) {
-				Date registrationDate = new SimpleDateFormat("yyyy-MM-dd").parse(vehicleRequest.getRegistrationDate());
-				vehicle.setRegistrationDate(registrationDate);
-			}
-			vehicle.setRegistrationNo(vehicleRequest.getRegistrationNo());
-			if(vehicleRequest.getRouteId()!=null) {
-				vehicle.setRouteId(vehicleRequest.getRouteId());
-			}
-			vehicle.setTotalCapacity(vehicleRequest.getTotalCapacity());
-			vehicle.setTotalKmRun(vehicleRequest.getTotalKmRun());
+		beginTransaction();
+		String jpql = "select v from vehicle v where v.registrationNo =:regNo";
+    	Query query = entityManager.createQuery(jpql);
+    	query.setParameter("regNo", vehicleRequest.getRegistrationNo());
+    	List<Vehicle> vehicles = query.getResultList();
+    	endTransaction();
+    	if(!vehicles.isEmpty()) {
+    		throw new TransportException(TransportConstants.VEHICLE_ALREADY_EXISTS);
+    	}
+		Vehicle vehicle = new Vehicle();
+		if(vehicleRequest.getLastServiceDate()!=null) {
+			Date lastServiceDate = new SimpleDateFormat("yyyy-MM-dd").parse(vehicleRequest.getLastServiceDate());
+			vehicle.setLastServiceDate(lastServiceDate);
+		}
+		if(vehicleRequest.getNextServiceDate()!=null) {
+			Date nextServiceDate = new SimpleDateFormat("yyyy-MM-dd").parse(vehicleRequest.getNextServiceDate());
+			vehicle.setNextServiceDate(nextServiceDate);
+		}
+		if(vehicleRequest.getRegistrationDate()!=null) {
+			Date registrationDate = new SimpleDateFormat("yyyy-MM-dd").parse(vehicleRequest.getRegistrationDate());
+			vehicle.setRegistrationDate(registrationDate);
+		}
+		vehicle.setRegistrationNo(vehicleRequest.getRegistrationNo());
+		if(vehicleRequest.getRouteId()!=null) {
+			vehicle.setRouteId(vehicleRequest.getRouteId());
+		}
+		vehicle.setTotalCapacity(vehicleRequest.getTotalCapacity());
+		vehicle.setTotalKmRun(vehicleRequest.getTotalKmRun());
+		try {
 			beginTransaction();
 			entityManager.persist(vehicle);
 			endTransaction();
-		
+		}catch(Exception e) {
+			throw new TransportException(TransportConstants.ADD_VEHICLE_ERROR);
+		}
 		return new SuccessResponse("200","Vehicle addded successfully");
 	}
 
 	@Override
 	public SuccessResponse addRoute(RouteRequest routeRequest) throws TransportException {
-			Route route = new Route();
-			route.setStartPoint(routeRequest.getStartPoint());
-			route.setDestinationPoint(routeRequest.getDestinationPoint());
+		beginTransaction();
+		String jpql = "select r from route r where upper(startPoint)= :startPoint and upper(destinationPoint) =:destinationPoint";
+    	Query query = entityManager.createQuery(jpql);
+    	query.setParameter("startPoint", routeRequest.getStartPoint().toUpperCase());
+    	query.setParameter("destinationPoint", routeRequest.getDestinationPoint().toUpperCase());
+    	List<Route> routes = query.getResultList();
+    	endTransaction();
+    	if(!routes.isEmpty()) {
+    		throw new TransportException(TransportConstants.DUPICATE_ROUTE_ERROR);
+    	}
+		Route route = new Route();
+		route.setStartPoint(routeRequest.getStartPoint());
+		route.setDestinationPoint(routeRequest.getDestinationPoint());
+		try {
 			beginTransaction();
 			entityManager.persist(route);
 			endTransaction();
+		}catch(Exception e) {
+			throw new TransportException(TransportConstants.ADD_ROUTE_ERROR);
+		}
 		
 		return new SuccessResponse("200","Route addded successfully");
 	}
 
 	@Override
-	public List<VehicleResponse> findVehiclesByRouteId(Long routeId) {
+	public List<VehicleResponse> findVehiclesByRouteId(Long routeId) throws TransportException {
 		List<VehicleResponse> vehicleResponses = new ArrayList<>();
 		beginTransaction();
 		String jpql = "select v from vehicle v where v.routeId =:routeId";
@@ -139,6 +173,9 @@ public class TransportRepositoryImpl implements TransportRepository{
     	query.setParameter("routeId", routeId);
     	List<Vehicle> vehicles = query.getResultList();
     	endTransaction();
+    	if(vehicles.isEmpty()) {
+    		throw new TransportException(TransportConstants.VEHICLE_NOT_FOUND);
+    	}
     	vehicles.stream().forEach((Vehicle vehicle)->{
     		VehicleResponse vehicleResponse = new VehicleResponse();
     		vehicleResponse.setRegistrationNo(vehicle.getRegistrationNo());
@@ -213,7 +250,11 @@ public class TransportRepositoryImpl implements TransportRepository{
 	}
 
 	@Override
-	public SuccessResponse editVehicleDtails(VehicleRequest vehicleRequest) throws ParseException {
+	public SuccessResponse editVehicleDtails(VehicleRequest vehicleRequest) throws ParseException, TransportException {
+		if(vehicleRequest.getRegistrationDate()!=null || 
+				vehicleRequest.getRegistrationNo()!=null) {
+			throw new TransportException(TransportConstants.EDIT_VEHICLE_ERROR);
+		}
 		beginTransaction();
 		Vehicle vehicle = entityManager.find(Vehicle.class, vehicleRequest.getVehicleId());
 		endTransaction();
@@ -231,10 +272,16 @@ public class TransportRepositoryImpl implements TransportRepository{
 		if(vehicleRequest.getSeatsFilled()!=null) {
 			vehicle.setSeatsFilled(vehicleRequest.getSeatsFilled().intValue());
 		}
+		if(vehicleRequest.getTotalCapacity()!=0) {
+			vehicle.setTotalCapacity(vehicleRequest.getTotalCapacity());
+		}
+		if(vehicleRequest.getTotalKmRun()!=null) {
+			vehicle.setTotalKmRun(vehicleRequest.getTotalKmRun());
+		}
 		beginTransaction();
 		entityManager.merge(vehicle);
 		endTransaction();
-		return new SuccessResponse("200","Route addded successfully");
+		return new SuccessResponse("200","Vehicle Updated successfully");
 	}
 	
 }

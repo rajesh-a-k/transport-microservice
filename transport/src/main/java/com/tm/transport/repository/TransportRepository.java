@@ -16,20 +16,20 @@ import com.tm.transport.response.VehicleResponse;
 
 public interface TransportRepository {
 
-	List<VehicleResponse> findAllVehicles();
+	List<VehicleResponse> findAllVehicles() throws TransportException;
 
-	List<RouteResponse> findAllRoutes();
+	List<RouteResponse> findAllRoutes() throws TransportException;
 
 	SuccessResponse addVehicle(VehicleRequest vehicleRequest) throws TransportException,ParseException;
 
 	SuccessResponse addRoute(RouteRequest routeRequest) throws TransportException;
 
-	List<VehicleResponse> findVehiclesByRouteId(Long routeId);
+	List<VehicleResponse> findVehiclesByRouteId(Long routeId) throws TransportException;
 
 	PaymentResponse doTicketPayment(PaymentRequest paymentRequest) throws ParseException;
 
 	DayCollectionResponse findTotalDayCollection() throws ParseException;
 
-	SuccessResponse editVehicleDtails(VehicleRequest vehicleRequest) throws ParseException;
+	SuccessResponse editVehicleDtails(VehicleRequest vehicleRequest) throws ParseException, TransportException;
 
 }
