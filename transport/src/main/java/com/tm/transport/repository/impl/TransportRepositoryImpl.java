@@ -90,7 +90,6 @@ public class TransportRepositoryImpl implements TransportRepository{
     	routes.stream().forEach((Route route)->{
     		RouteResponse routeResponse = new RouteResponse();
     		routeResponse.setDestinationPoint(route.getDestinationPoint());
-    		routeResponse.setNumberOfVehicles(route.getNumberOfVehicles());
     		routeResponse.setRouteId(route.getRouteId());
     		routeResponse.setStartPoint(route.getStartPoint());
     		routeResponses.add(routeResponse);
@@ -183,6 +182,7 @@ public class TransportRepositoryImpl implements TransportRepository{
     		vehicleResponse.setSeatsFilled(vehicle.getSeatsFilled());
     		vehicleResponse.setTotalCapacity(vehicle.getTotalCapacity());
     		vehicleResponse.setSeatsAvailable(vehicle.getTotalCapacity()-vehicle.getSeatsFilled());
+    		vehicleResponse.setVehicleId(vehicle.getVehicleId());
     		vehicleResponses.add(vehicleResponse);
     	});
 		return vehicleResponses;

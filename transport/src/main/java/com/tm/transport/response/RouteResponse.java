@@ -5,7 +5,7 @@ public class RouteResponse {
 	private int routeId;
 	private String startPoint;
 	private String destinationPoint;
-	private Long numberOfVehicles;
+
 	/**
 	 * @return the routeId
 	 */
@@ -41,18 +41,6 @@ public class RouteResponse {
 	 */
 	public void setDestinationPoint(String destinationPoint) {
 		this.destinationPoint = destinationPoint;
-	}
-	/**
-	 * @return the numberOfVehicles
-	 */
-	public Long getNumberOfVehicles() {
-		return numberOfVehicles;
-	}
-	/**
-	 * @param numberOfVehicles the numberOfVehicles to set
-	 */
-	public void setNumberOfVehicles(Long numberOfVehicles) {
-		this.numberOfVehicles = numberOfVehicles;
 	}
 	
 	

@@ -12,13 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-
 @Entity(name = "route")
 @Table(name = "route")
 public class Route implements Serializable{
@@ -40,9 +33,6 @@ public class Route implements Serializable{
 	
 	@Column(name="DESTINATION_POINT")
 	private String destinationPoint;
-	
-	@Column(name="NUMBER_OF_VEHICLES")
-	private Long numberOfVehicles;
 	
 	@OneToMany(mappedBy = "route",fetch = FetchType.EAGER )
 	private List<Vehicle> vehicles;
@@ -75,15 +65,6 @@ public class Route implements Serializable{
 		this.startPoint = startPoint;
 	}
 
-	
-
-	/**
-	 * @return the numberOfVehicles
-	 */
-	public Long getNumberOfVehicles() {
-		return numberOfVehicles;
-	}
-
 	/**
 	 * @return the destinationPoint
 	 */
@@ -96,13 +77,6 @@ public class Route implements Serializable{
 	 */
 	public void setDestinationPoint(String destinationPoint) {
 		this.destinationPoint = destinationPoint;
-	}
-
-	/**
-	 * @param numberOfVehicles the numberOfVehicles to set
-	 */
-	public void setNumberOfVehicles(Long numberOfVehicles) {
-		this.numberOfVehicles = numberOfVehicles;
 	}
 
 	/**
