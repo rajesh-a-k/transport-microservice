@@ -236,12 +236,15 @@ public class TransportRepositoryImpl implements TransportRepository{
 		query.setParameter("payDate", currentDate);
 		List<Object[]> objectArray = query.getResultList();
 		endTransaction();
-		Map<Integer,BigDecimal> vehicleAmountMap = new HashMap<>();
+		Map<String,BigDecimal> vehicleAmountMap = new HashMap<>();
+		beginTransaction();
 		for(Object obj[]:objectArray) {
-			vehicleAmountMap.put(new Integer(obj[0].toString()), new BigDecimal(obj[1].toString()));
+			Vehicle vehicle = entityManager.find(Vehicle.class,new Integer(obj[0].toString()));
+			vehicleAmountMap.put(vehicle.getRegistrationNo(), new BigDecimal(obj[1].toString()));
 		}
+		endTransaction();
 		BigDecimal totalCollection = new BigDecimal(0);
-		for(Map.Entry<Integer, BigDecimal> entry:vehicleAmountMap.entrySet()){
+		for(Map.Entry<String, BigDecimal> entry:vehicleAmountMap.entrySet()){
 			totalCollection=totalCollection.add(entry.getValue());
 		}
 		dayCollectionResponse.setVehicleAmountMap(vehicleAmountMap);

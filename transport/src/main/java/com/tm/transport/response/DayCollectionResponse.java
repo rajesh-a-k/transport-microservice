@@ -5,18 +5,18 @@ import java.util.Map;
 
 public class DayCollectionResponse {
 	
-	private Map<Integer,BigDecimal> vehicleAmountMap;
+	private Map<String,BigDecimal> vehicleAmountMap;
 	private BigDecimal dayCollection;
 	/**
 	 * @return the vehicleAmountMap
 	 */
-	public Map<Integer, BigDecimal> getVehicleAmountMap() {
+	public Map<String, BigDecimal> getVehicleAmountMap() {
 		return vehicleAmountMap;
 	}
 	/**
 	 * @param vehicleAmountMap the vehicleAmountMap to set
 	 */
-	public void setVehicleAmountMap(Map<Integer, BigDecimal> vehicleAmountMap) {
+	public void setVehicleAmountMap(Map<String, BigDecimal> vehicleAmountMap) {
 		this.vehicleAmountMap = vehicleAmountMap;
 	}
 	/**
