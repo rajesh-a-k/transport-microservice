@@ -32,4 +32,6 @@ public interface TransportRepository {
 
 	SuccessResponse editVehicleDtails(VehicleRequest vehicleRequest) throws ParseException, TransportException;
 
+	VehicleResponse editCurrentLocation(VehicleRequest vehicleRequest);
+
 }

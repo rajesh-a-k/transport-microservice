@@ -127,7 +127,7 @@ public class TransportSecuredResource {
      * Method handling HTTP PUT requests. The returned object will be sent
      * to the client as "JSON" media type.
      *
-     * @return PaymentResponse that will be returned as a JSON response.
+     * @return Response that will be returned as a JSON response.
      */
 	@PUT
     @Path("updatevehicle")
@@ -136,5 +136,20 @@ public class TransportSecuredResource {
 	public Response updateVehicle(VehicleRequest vehicleRequest) throws ParseException, TransportException{
 		SuccessResponse successResponse = transportRepo.editVehicleDtails(vehicleRequest);
 		return Response.status(200).entity(successResponse).build();
+	}
+	
+	/**
+     * Method handling HTTP PUT requests. The returned object will be sent
+     * to the client as "JSON" media type.
+     *
+     * @return VehicleResponse that will be returned as a JSON response.
+     */
+	@PUT
+    @Path("updatelocation")
+    @Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public VehicleResponse updateCurrentLocation(VehicleRequest vehicleRequest) {
+		VehicleResponse vehicleResponse = transportRepo.editCurrentLocation(vehicleRequest);
+		return vehicleResponse;
 	}
 }

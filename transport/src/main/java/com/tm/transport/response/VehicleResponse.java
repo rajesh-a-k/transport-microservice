@@ -14,6 +14,7 @@ public class VehicleResponse {
 	private int seatsFilled;
 	private Long routeId;
 	private int seatsAvailable;
+	private String currentLocation;
 	/**
 	 * @return the vehicleId
 	 */
@@ -134,6 +135,18 @@ public class VehicleResponse {
 	 */
 	public void setSeatsAvailable(int seatsAvailable) {
 		this.seatsAvailable = seatsAvailable;
+	}
+	/**
+	 * @return the currentLocation
+	 */
+	public String getCurrentLocation() {
+		return currentLocation;
+	}
+	/**
+	 * @param currentLocation the currentLocation to set
+	 */
+	public void setCurrentLocation(String currentLocation) {
+		this.currentLocation = currentLocation;
 	}
 	
 	

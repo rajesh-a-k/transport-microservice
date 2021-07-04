@@ -13,6 +13,8 @@ public class VehicleRequest {
 	private Long totalKmRun;
 	private Long seatsFilled;
 	private Long routeId;
+	private String currentLocation;
+	private Long personsExit;
 	/**
 	 * @return the vehicleId
 	 */
@@ -121,6 +123,30 @@ public class VehicleRequest {
 	 */
 	public void setRouteId(Long routeId) {
 		this.routeId = routeId;
+	}
+	/**
+	 * @return the currentLocation
+	 */
+	public String getCurrentLocation() {
+		return currentLocation;
+	}
+	/**
+	 * @param currentLocation the currentLocation to set
+	 */
+	public void setCurrentLocation(String currentLocation) {
+		this.currentLocation = currentLocation;
+	}
+	/**
+	 * @return the personsExit
+	 */
+	public Long getPersonsExit() {
+		return personsExit;
+	}
+	/**
+	 * @param personsExit the personsExit to set
+	 */
+	public void setPersonsExit(Long personsExit) {
+		this.personsExit = personsExit;
 	}
 	
 	

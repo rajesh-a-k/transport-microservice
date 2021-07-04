@@ -60,6 +60,7 @@ public class TransportRepositoryImpl implements TransportRepository{
     		vehicleResponse.setTotalKmRun(vehicle.getTotalKmRun());
     		vehicleResponse.setVehicleId(vehicle.getVehicleId());
     		vehicleResponse.setSeatsAvailable(vehicle.getTotalCapacity()-vehicle.getSeatsFilled());
+    		vehicleResponse.setCurrentLocation(vehicle.getCurrentLocation());
     		vehicleResponses.add(vehicleResponse);
     	});
 		return vehicleResponses;
@@ -183,6 +184,7 @@ public class TransportRepositoryImpl implements TransportRepository{
     		vehicleResponse.setTotalCapacity(vehicle.getTotalCapacity());
     		vehicleResponse.setSeatsAvailable(vehicle.getTotalCapacity()-vehicle.getSeatsFilled());
     		vehicleResponse.setVehicleId(vehicle.getVehicleId());
+    		vehicleResponse.setCurrentLocation(vehicle.getCurrentLocation());
     		vehicleResponses.add(vehicleResponse);
     	});
 		return vehicleResponses;
@@ -285,6 +287,27 @@ public class TransportRepositoryImpl implements TransportRepository{
 		entityManager.merge(vehicle);
 		endTransaction();
 		return new SuccessResponse("200","Vehicle Updated successfully");
+	}
+
+	@Override
+	public VehicleResponse editCurrentLocation(VehicleRequest vehicleRequest) {
+		beginTransaction();
+		Vehicle vehicle = entityManager.find(Vehicle.class, vehicleRequest.getVehicleId());
+		endTransaction();
+		if(vehicleRequest.getCurrentLocation()!=null)
+			vehicle.setCurrentLocation(vehicleRequest.getCurrentLocation());
+		if(vehicleRequest.getPersonsExit()!=null)
+			vehicle.setSeatsFilled(vehicle.getSeatsFilled()-vehicleRequest.getPersonsExit().intValue());
+		beginTransaction();
+		entityManager.merge(vehicle);
+		endTransaction();
+		VehicleResponse vehicleResponse = new VehicleResponse();
+		vehicleResponse.setVehicleId(vehicleRequest.getVehicleId());
+		vehicleResponse.setTotalCapacity(vehicle.getTotalCapacity());
+		vehicleResponse.setSeatsFilled(vehicle.getSeatsFilled());
+		vehicleResponse.setSeatsAvailable(vehicle.getTotalCapacity()-vehicle.getSeatsFilled());
+		vehicleResponse.setCurrentLocation(vehicle.getCurrentLocation());
+		return vehicleResponse;
 	}
 	
 }

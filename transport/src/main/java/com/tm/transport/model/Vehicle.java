@@ -56,11 +56,14 @@ public class Vehicle implements Serializable{
 	@Column(name = "ROUTE_ID")
 	private Long routeId;
 	
+	@Column(name = "CURRENT_LOCATION")
+	private String currentLocation;
+	
 	@ManyToOne
 	@JoinColumn(name = "ROUTE_ID", insertable = false , updatable = false)
 	private Route route;
 	
-	@OneToMany(mappedBy = "vehicle",fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "vehicle")
 	private List<Payments> payments;
 
 	/**
@@ -203,6 +206,34 @@ public class Vehicle implements Serializable{
 	 */
 	public void setRouteId(Long routeId) {
 		this.routeId = routeId;
+	}
+
+	/**
+	 * @return the currentLocation
+	 */
+	public String getCurrentLocation() {
+		return currentLocation;
+	}
+
+	/**
+	 * @param currentLocation the currentLocation to set
+	 */
+	public void setCurrentLocation(String currentLocation) {
+		this.currentLocation = currentLocation;
+	}
+
+	/**
+	 * @return the payments
+	 */
+	public List<Payments> getPayments() {
+		return payments;
+	}
+
+	/**
+	 * @param payments the payments to set
+	 */
+	public void setPayments(List<Payments> payments) {
+		this.payments = payments;
 	}
 	
 	
